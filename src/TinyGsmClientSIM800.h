@@ -611,6 +611,18 @@ public:
     return waitResponse() == 1;
   }
 
+  String getCallingNumber() {
+    sendAT(GF("+CLCC"));
+    if (waitResponse(GF(GSM_NL "+CLCC:")) != 1)
+    {
+      return "";
+    }
+    streamSkipUntil('"');
+    String res = stream.readStringUntil('"');
+    waitResponse();
+    return res;
+  }
+
   // 0-9,*,#,A,B,C,D
   bool dtmfSend(char cmd, int duration_ms = 100) {
     duration_ms = constrain(duration_ms, 100, 1000);
